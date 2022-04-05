@@ -39,10 +39,10 @@ function drawRect1P(ctx, x, y, width) {
 
   const depth = globalState.cubeDepth;
   
-  const [bx1, by1] = moveToVanishingPoint2(x, y, depth, 1);
-  const [bx2, by2] = moveToVanishingPoint2(x + width, y, depth, 1);
-  const [bx3, by3] = moveToVanishingPoint2(x, y + width, depth, 1);
-  const [bx4, by4] = moveToVanishingPoint2(x + width, y + width, depth, 1);
+  const [bx1, by1] = moveToVanishingPoint(x, y, depth, 1);
+  const [bx2, by2] = moveToVanishingPoint(x + width, y, depth, 1);
+  const [bx3, by3] = moveToVanishingPoint(x, y + width, depth, 1);
+  const [bx4, by4] = moveToVanishingPoint(x + width, y + width, depth, 1);
   line(ctx, bx1, by1, bx2, by2);
   line(ctx, bx1, by1, bx3, by3);
   line(ctx, bx2, by2, bx4, by4);
@@ -58,14 +58,14 @@ function drawRect2P(ctx, x, y, h) {
 
   const depth = globalState.cubeDepth;
 
-  const [bx1, by1] = moveToVanishingPoint2(x, y, depth, 1);
-  const [bx12, by12] = moveToVanishingPoint2(bx1, by1, depth, 2);
-  const [bx2, by2] = moveToVanishingPoint2(x, y, depth, 2);
-  const [bx21, by21] = moveToVanishingPoint2(bx2, by2, depth, 1);
-  const [bx3, by3] = moveToVanishingPoint2(x, y + h, depth, 1);
-  const [bx32, by32] = moveToVanishingPoint2(bx3, by3, depth, 2);
-  const [bx4, by4] = moveToVanishingPoint2(x, y + h, depth, 2);
-  const [bx42, by42] = moveToVanishingPoint2(bx4, by4, depth, 1);
+  const [bx1, by1] = moveToVanishingPoint(x, y, depth, 1);
+  const [bx12, by12] = moveToVanishingPoint(bx1, by1, depth, 2);
+  const [bx2, by2] = moveToVanishingPoint(x, y, depth, 2);
+  const [bx21, by21] = moveToVanishingPoint(bx2, by2, depth, 1);
+  const [bx3, by3] = moveToVanishingPoint(x, y + h, depth, 1);
+  const [bx32, by32] = moveToVanishingPoint(bx3, by3, depth, 2);
+  const [bx4, by4] = moveToVanishingPoint(x, y + h, depth, 2);
+  const [bx42, by42] = moveToVanishingPoint(bx4, by4, depth, 1);
 
   line(ctx, bx1, by1, bx12, by12);
   line(ctx, bx2, by2, bx21, by21);
@@ -73,7 +73,7 @@ function drawRect2P(ctx, x, y, h) {
   line(ctx, bx4, by4, bx42, by42);
 }
 
-function moveToVanishingPoint2(x, y, plen, vpIx) {
+function moveToVanishingPoint(x, y, plen, vpIx) {
   const [vx, vy] = vpCoords(vpIx);
   const rx = (vx - x) * plen;
   const ry = (vy - y) * plen;
