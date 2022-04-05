@@ -55,6 +55,22 @@ function drawRect2P(ctx, x, y, h) {
   drawVanishingLine(ctx, x, y + h, 1);
   drawVanishingLine(ctx, x, y,     2);
   drawVanishingLine(ctx, x, y + h, 2);
+
+  const depth = globalState.cubeDepth;
+
+  const [bx1, by1] = moveToVanishingPoint2(x, y, depth, 1);
+  const [bx12, by12] = moveToVanishingPoint2(bx1, by1, depth, 2);
+  const [bx2, by2] = moveToVanishingPoint2(x, y, depth, 2);
+  const [bx21, by21] = moveToVanishingPoint2(bx2, by2, depth, 1);
+  const [bx3, by3] = moveToVanishingPoint2(x, y + h, depth, 1);
+  const [bx32, by32] = moveToVanishingPoint2(bx3, by3, depth, 2);
+  const [bx4, by4] = moveToVanishingPoint2(x, y + h, depth, 2);
+  const [bx42, by42] = moveToVanishingPoint2(bx4, by4, depth, 1);
+
+  line(ctx, bx1, by1, bx12, by12);
+  line(ctx, bx2, by2, bx21, by21);
+  line(ctx, bx3, by3, bx32, by32);
+  line(ctx, bx4, by4, bx42, by42);
 }
 
 function moveToVanishingPoint2(x, y, plen, vpIx) {
