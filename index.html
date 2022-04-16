@@ -5,18 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Cubes in Perspective</title>
     <style>
+      label {display: block;}
       input[type=range] { display: block; width: 800px; }
       canvas { border: 1px dashed grey;}
     </style>
   </head>
   <body>
     <h1>Cubes in Perspective</h1>
-    <fieldset id="type-input">
-      <input type="radio" name="perspective-type" id="1p" value="1p" checked>
-      <label for="1p">1P</label>
-      <input type="radio" name="perspective-type" id="2p" value="2p">
-      <label for="2p">2P</label>
-    </fieldset>
+    <label for="perspective-type">Perspective Type</label>
+    <select id="perspective-type">
+      <option value="1p">1P</option>
+      <option value="2p">2P</option>
+    </select>
     <label for="horizon-height">Horizon</label>
     <input type="range" id="horizon-input" min="0" max="800">
     <label for="vp1-input">Vanishing Point One</label>

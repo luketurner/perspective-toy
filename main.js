@@ -7,11 +7,10 @@ const globalState = {
   cubeDepth: 0.25
 };
 
-bindInput(document.getElementById('horizon-input'), 'horizonY');
-bindInput(document.getElementById('vp1-input'), 'vp1X');
-bindInput(document.getElementById('vp2-input'), 'vp2X');
-
-document.getElementById('type-input').addEventListener('change', (ev) => updateState({ type: ev.target.value }));
+bindInput('perspective-type', 'change', 'type');
+bindInput('horizon-input', 'input', 'horizonY');
+bindInput('vp1-input', 'input', 'vp1X');
+bindInput('vp2-input', 'input', 'vp2X');
 
 function drawInPerspective() {
   const ctx = globalState.canvas.getContext('2d');
@@ -169,8 +168,9 @@ function clear(ctx) {
 
 // State mgmt functions
 
-function bindInput(input, stateKey) {
-  input.addEventListener('input', (ev) => updateState({ [stateKey]: ev.target.value }));
+function bindInput(inputId, eventType, stateKey) {
+  const input = document.getElementById(inputId);
+  input.addEventListener(eventType, (ev) => updateState({ [stateKey]: ev.target.value }));
   updateState({ [stateKey]: input.value });
 }
 
