@@ -124,10 +124,6 @@ function drawVanishingLine(ctx, x, y, vpIx) {
   line(ctx, x, y, globalState[`vp${vpIx}X`], globalState.horizonY, "grey");
 }
 
-function angleToVanishingPoint(x, y, vpIx) {
-  return pointsAngle(x, y, globalState[`vp${vpIx}X`], globalState.horizonY);
-}
-
 function drawHorizon(ctx) {
   line(ctx, 0, globalState.horizonY, ctx.canvas.width, globalState.horizonY, "grey");
 }
@@ -137,19 +133,6 @@ function drawVanishingPoint(ctx, ix) {
 }
 
 // lower-level drawing functions (not using global state)
-
-function pointsAngle(x1, y1, x2, y2) {
-  return Math.tan(y2 - y1 / x2 - x1);
-}
-
-function lineAtAngle(ctx, x1, y1, angle, len) {
-  ctx.beginPath();
-  ctx.moveTo(x1, y1);
-  ctx.lineTo(x1 + len, y1);
-  ctx.rotate(angle);
-  ctx.stroke();
-  ctx.setTransform(1, 0, 0, 1, 0, 0);
-}
 
 function rect(ctx, x, y, width, height, color = "black") {
   ctx.beginPath();
