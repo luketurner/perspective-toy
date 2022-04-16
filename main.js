@@ -42,6 +42,10 @@ function drawRect1P(ctx, x, y, width) {
   const [bx2, by2] = moveToVanishingPoint(x + width, y, depth, 1);
   const [bx3, by3] = moveToVanishingPoint(x, y + width, depth, 1);
   const [bx4, by4] = moveToVanishingPoint(x + width, y + width, depth, 1);
+  line(ctx, x, y, bx1, by1);
+  line(ctx, x + width, y, bx2, by2);
+  line(ctx, x, y + width, bx3, by3);
+  line(ctx, x + width, y + width, bx4, by4);
   line(ctx, bx1, by1, bx2, by2);
   line(ctx, bx1, by1, bx3, by3);
   line(ctx, bx2, by2, bx4, by4);
@@ -69,8 +73,12 @@ function drawRect2P(ctx, x, y, h) {
   const [ix2, iy2] = findLineIntersection(bx3, by3, v2x, v2y, bx4, by4, v1x, v1y);
 
   // perspective lines
+  line(ctx, x, y, bx1, by1);
+  line(ctx, x, y, bx2, by2);
   line(ctx, bx1, by1, ix1, iy1);
   line(ctx, bx2, by2, ix1, iy1);
+  line(ctx, x, y + h, bx3, by3);
+  line(ctx, x, y + h, bx4, by4);
   line(ctx, bx3, by3, ix2, iy2);
   line(ctx, bx4, by4, ix2, iy2);
 
@@ -113,7 +121,7 @@ function vpCoords(ix) {
 }
 
 function drawVanishingLine(ctx, x, y, vpIx) {
-  line(ctx, x, y, globalState[`vp${vpIx}X`], globalState.horizonY);
+  line(ctx, x, y, globalState[`vp${vpIx}X`], globalState.horizonY, "grey");
 }
 
 function angleToVanishingPoint(x, y, vpIx) {
@@ -121,7 +129,7 @@ function angleToVanishingPoint(x, y, vpIx) {
 }
 
 function drawHorizon(ctx) {
-  line(ctx, 0, globalState.horizonY, ctx.canvas.width, globalState.horizonY);
+  line(ctx, 0, globalState.horizonY, ctx.canvas.width, globalState.horizonY, "grey");
 }
 
 function drawVanishingPoint(ctx, ix) {
@@ -143,22 +151,25 @@ function lineAtAngle(ctx, x1, y1, angle, len) {
   ctx.setTransform(1, 0, 0, 1, 0, 0);
 }
 
-function rect(ctx, x, y, width, height) {
+function rect(ctx, x, y, width, height, color = "black") {
   ctx.beginPath();
   ctx.rect(x, y, width, height);
+  ctx.strokeStyle = color;
   ctx.stroke();
 }
 
-function line(ctx, x1, y1, x2, y2) {
+function line(ctx, x1, y1, x2, y2, color = "black") {
   ctx.beginPath();
   ctx.moveTo(x1, y1);
   ctx.lineTo(x2, y2);
+  ctx.strokeStyle = color;
   ctx.stroke();
 }
 
-function dot(ctx, x, y) {
+function dot(ctx, x, y, color = "black") {
   ctx.beginPath();
   ctx.ellipse(x, y, 2, 2, 0, 0, 2 * Math.PI);
+  ctx.fillStyle = color;
   ctx.fill();
 }
 
