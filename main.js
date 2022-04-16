@@ -58,19 +58,27 @@ function drawRect2P(ctx, x, y, h) {
 
   const depth = globalState.cubeDepth;
 
-  const [bx1, by1] = moveToVanishingPoint(x, y, depth, 1);
-  const [bx12, by12] = moveToVanishingPoint(bx1, by1, depth, 2);
-  const [bx2, by2] = moveToVanishingPoint(x, y, depth, 2);
-  const [bx21, by21] = moveToVanishingPoint(bx2, by2, depth, 1);
-  const [bx3, by3] = moveToVanishingPoint(x, y + h, depth, 1);
-  const [bx32, by32] = moveToVanishingPoint(bx3, by3, depth, 2);
-  const [bx4, by4] = moveToVanishingPoint(x, y + h, depth, 2);
-  const [bx42, by42] = moveToVanishingPoint(bx4, by4, depth, 1);
+  const [v1x, v1y] = vpCoords(1);
+  const [v2x, v2y] = vpCoords(2);
 
-  line(ctx, bx1, by1, bx12, by12);
-  line(ctx, bx2, by2, bx21, by21);
-  line(ctx, bx3, by3, bx32, by32);
-  line(ctx, bx4, by4, bx42, by42);
+  const [bx1, by1] = moveToVanishingPoint(x, y, depth, 1);
+  const [bx2, by2] = moveToVanishingPoint(x, y, depth, 2);
+  const [bx3, by3] = moveToVanishingPoint(x, y + h, depth, 1);
+  const [bx4, by4] = moveToVanishingPoint(x, y + h, depth, 2);
+
+  const [ix1, iy1] = findLineIntersection(bx1, by1, v2x, v2y, bx2, by2, v1x, v1y);
+  const [ix2, iy2] = findLineIntersection(bx3, by3, v2x, v2y, bx4, by4, v1x, v1y);
+
+  // perspective lines
+  line(ctx, bx1, by1, ix1, iy1);
+  line(ctx, bx2, by2, ix1, iy1);
+  line(ctx, bx3, by3, ix2, iy2);
+  line(ctx, bx4, by4, ix2, iy2);
+
+  // vertical lines
+  line(ctx, bx1, by1, bx3, by3);
+  line(ctx, bx2, by2, bx4, by4);
+  line(ctx, ix1, iy1, ix2, iy2);
 }
 
 function moveToVanishingPoint(x, y, plen, vpIx) {
@@ -78,6 +86,27 @@ function moveToVanishingPoint(x, y, plen, vpIx) {
   const rx = (vx - x) * plen;
   const ry = (vy - y) * plen;
   return [x + rx, y + ry];
+}
+
+// Calculate intersecting point between line from x1,y1 -> x2,y2 and line from x3,y3 -> x4,y4
+function findLineIntersection(x1, y1, x2, y2, x3, y3, x4, y4) {
+  const [m1, b1] = findSlopeAndIntercept(x1, y1, x2, y2);
+  const [m2, b2] = findSlopeAndIntercept(x3, y3, x4, y4);
+
+  // find x, y where lines intersect
+  const x = (b2 - b1) / (m1 - m2);
+  const y = m1 * x + b1;
+
+  return [x, y];
+}
+
+/**
+ * Given two points, calculate the slope and Y-intercept of the line that passes through them.
+ */
+function findSlopeAndIntercept(x1, y1, x2, y2) {
+  const m = (y2 - y1) / (x2 - x1);
+  const b = y1 - (m * x1);
+  return [m, b];
 }
 
 function vpCoords(ix) {
