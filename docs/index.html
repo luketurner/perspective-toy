@@ -22,10 +22,19 @@
     <input type="range" id="horizon-input" min="0" max="800">
     <label for="vp1-input">Vanishing Point One</label>
     <input type="range" id="vp1-input" min="0" max="800">
-    <label for="vp1-input">Vanishing Point Two (for 2P)</label>
+    <label for="vp2-input">Vanishing Point Two (for 2P)</label>
     <input type="range" id="vp2-input" min="0" max="800">
     <canvas id="main-canvas" width="800" height="800">Canvas support required</canvas>
     <footer>Copyright 2022 Luke Turner</footer>
-    <script src="main.js"></script>
+    <script src="perspective-toy.js"></script>
+    <script>
+      initPerspectiveToy({
+        elCanvas: document.getElementById("main-canvas"),
+        elInputPerspectiveType: document.getElementById("perspective-type"),
+        elInputHorizon: document.getElementById("horizon-input"),
+        elInputVanishingPointOne: document.getElementById("vp1-input"),
+        elInputVanishingPointTwo: document.getElementById("vp2-input"),
+      })
+    </script>
   </body>
 </html>
