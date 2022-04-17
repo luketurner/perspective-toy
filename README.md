@@ -7,4 +7,4 @@ Inspired by the [1994 Perspective Drawing Series](https://marshallart.com/SHOP/a
 Of course, if you really want to render a cube, you should use a 3D rendering API. This is purely a for-fun experiment to build intuition around perspective drawing.
 ## Usage
 
-This is a purely static site (HTML + CSS + JS) with no build step. Just clone the repository and serve the `public` folder with your HTTP server of choice.
+This is a purely static site (HTML + CSS + JS) with no build step. Just clone the repository and serve the `docs` folder with your HTTP server of choice. (Note, the folder is called "Docs" for compatibility with Github Pages hosting. It's not actually docs.)
