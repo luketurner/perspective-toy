@@ -1,4 +1,4 @@
-# Cubes in perspective
+# Perspective toy
 
 A little experiment in using perspective drawing techniques (horizon lines and vanishing points) to make "3D-looking" boxes. Users can manipulate the location of the horizon and vanishing points to change the perspective of the box. Currently supports 1P (one-point) and 2P (two-point) perspective types.
 
