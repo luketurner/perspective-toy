@@ -17,20 +17,17 @@ function drawInPerspective() {
   clear(ctx);
   drawHorizon(ctx);
   if (globalState.type === '1p') {
-    drawVanishingPoint(ctx, 1);
     drawRect1P(ctx, 350, 600, 100);
   } else {
-    drawVanishingPoint(ctx, 1);
-    drawVanishingPoint(ctx, 2);
     drawRect2P(ctx, 400, 600, 100);
-
   }
 }
 
 // Drawing functions (using global state)
 
 function drawRect1P(ctx, x, y, width) {
-  rect(ctx, x, y, width, width);
+  drawVanishingPoint(ctx, 1);
+  
   drawVanishingLine(ctx, x,         y,         1);
   drawVanishingLine(ctx, x,         y + width, 1);
   drawVanishingLine(ctx, x + width, y,         1);
@@ -42,6 +39,7 @@ function drawRect1P(ctx, x, y, width) {
   const [bx2, by2] = moveToVanishingPoint(x + width, y, depth, 1);
   const [bx3, by3] = moveToVanishingPoint(x, y + width, depth, 1);
   const [bx4, by4] = moveToVanishingPoint(x + width, y + width, depth, 1);
+  rect(ctx, x, y, width, width);
   line(ctx, x, y, bx1, by1);
   line(ctx, x + width, y, bx2, by2);
   line(ctx, x, y + width, bx3, by3);
@@ -53,6 +51,9 @@ function drawRect1P(ctx, x, y, width) {
 }
 
 function drawRect2P(ctx, x, y, h) {
+  drawVanishingPoint(ctx, 1);
+  drawVanishingPoint(ctx, 2);
+
   line(ctx, x, y, x, y + h);
   drawVanishingLine(ctx, x, y,     1);
   drawVanishingLine(ctx, x, y + h, 1);
