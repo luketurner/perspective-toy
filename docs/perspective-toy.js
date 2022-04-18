@@ -92,6 +92,11 @@ function initPerspectiveToy(opts) {
     const [ix1, iy1] = findLineIntersection(bx1, by1, v2x, v2y, bx2, by2, v1x, v1y);
     const [ix2, iy2] = findLineIntersection(bx3, by3, v2x, v2y, bx4, by4, v1x, v1y);
 
+    drawVanishingLine(ix1, iy1, 1);
+    drawVanishingLine(ix1, iy1, 2);
+    drawVanishingLine(ix2, iy2, 1);
+    drawVanishingLine(ix2, iy2, 2);
+
     // perspective lines
     line(x, y, bx1, by1);
     line(x, y, bx2, by2);
