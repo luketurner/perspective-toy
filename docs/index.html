@@ -10,7 +10,8 @@
       input[type=range] { display: block; width: 800px; }
       canvas { border: 1px dashed grey;}
     </style>
-    <script type="module" crossorigin src="/assets/index.891d93e6.js"></script>
+    
+    <script type="module" crossorigin src="./assets/index.445c9fd6.js"></script>
   </head>
   <body>
     <h1>Perspective toy</h1>
@@ -27,15 +28,5 @@
     <input type="range" id="vp2-input" min="0" max="800">
     <canvas id="main-canvas" width="800" height="800">Canvas support required</canvas>
     <footer>Copyright 2022 Luke Turner</footer>
-    
-    <script>
-      initPerspectiveToy({
-        elCanvas: document.getElementById("main-canvas"),
-        elInputPerspectiveType: document.getElementById("perspective-type"),
-        elInputHorizon: document.getElementById("horizon-input"),
-        elInputVanishingPointOne: document.getElementById("vp1-input"),
-        elInputVanishingPointTwo: document.getElementById("vp2-input"),
-      })
-    </script>
   </body>
 </html>

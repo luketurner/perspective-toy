@@ -2,14 +2,11 @@
   "name": "cubes-in-perspective",
   "version": "0.1.0",
   "description": "Live URL: https://luketurner.org/perspective-toy",
-  "main": "index.js",
-  "directories": {
-    "doc": "docs"
-  },
+  "main": "src/index.ts",
   "scripts": {
     "start": "vite",
     "dev": "vite",
-    "build": "vite build --outDir docs",
+    "build": "vite build --outDir docs --base ./",
     "serve": "vite preview"
   },
   "repository": {

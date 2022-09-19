@@ -194,3 +194,12 @@ function initPerspectiveToy(opts) {
   }
 
 }
+
+initPerspectiveToy({
+  elCanvas: document.getElementById("main-canvas"),
+  elInputPerspectiveType: document.getElementById("perspective-type"),
+  elInputHorizon: document.getElementById("horizon-input"),
+  elInputVanishingPointOne: document.getElementById("vp1-input"),
+  elInputVanishingPointTwo: document.getElementById("vp2-input"),
+})
+
