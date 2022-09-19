@@ -1,0 +1,29 @@
+{
+  "name": "cubes-in-perspective",
+  "version": "0.1.0",
+  "description": "Live URL: https://luketurner.org/perspective-toy",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "start": "vite",
+    "dev": "vite",
+    "build": "vite build --outDir docs",
+    "serve": "vite preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/luketurner/perspective-toy.git"
+  },
+  "author": "Luke Turner",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/luketurner/perspective-toy/issues"
+  },
+  "homepage": "https://github.com/luketurner/perspective-toy#readme",
+  "devDependencies": {
+    "typescript": "^4.8.3",
+    "vite": "^3.1.2"
+  }
+}
