@@ -9,4 +9,14 @@ Inspired by the [1994 Perspective Drawing Series](https://marshallart.com/SHOP/a
 Of course, if you really want to render a cube, you should use a 3D rendering API. This is purely a for-fun experiment to build intuition around perspective drawing.
 ## Local Usage / Development
 
-This is a purely static site (HTML + CSS + JS) with no build step. Just clone the repository and serve the `docs` folder with your HTTP server of choice. (Note, the folder is called "Docs" for compatibility with Github Pages hosting. It's not actually docs.)
+Built with vite. Commands:
+
+```bash
+npm install     # install deps (incl. vite)
+
+npm run start   # run dev server
+
+npm run build   # build prod
+```
+
+The live URL is served by Github Pages from this repository.
