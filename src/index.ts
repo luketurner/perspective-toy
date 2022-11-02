@@ -14,10 +14,7 @@ function handleMouseUp(x: number, y: number) {
   if (db.dragging) {
     stopDragging();
   } else {
-    const box = findBox(x, y);
-    if (!box) return dot(x, y, 'blue');
-    if (!box.onClick) return dot(x, y, 'red');
-    box.onClick();
+    findBox(x, y)?.onClick?.();
   }
 }
 
