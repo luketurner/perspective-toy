@@ -1,16 +1,41 @@
 import { addBox } from "./box";
-import { addCube, clearCubes, db } from "./db";
+import { addCube, addVanishingPoint, clearCubes, clearVps, Cube, db, rmCube, rmVanishingPoint, VanishingPoint } from "./db";
 import { ctx } from "./draw";
 
 
 export function drawUi() {
   return addStack(16, 16, 8,
     (x, y) => addText(x, y, 'PERSPECTIVE TOY'),
-    (x, y) => drawToolbar(x, y)  
+    // (x, y) => addToolbar(x, y),
+    (x, y) => addVpRow(x, y),
+    (x, y) => addCubesRow(x, y),
   );
 };
 
-function drawToolbar(x: number, y: number) {
+function addVpRow(x: number, y: number) {
+  return addFlow(x, y, 8,
+    (x, y) => addText(x, y, 'V.PTS'),
+    (x, y) => addButton(x, y, 'ADD', 'addVp', () => addVanishingPoint({ posX: 100 })),
+    ...Object.keys(db.vps).map(id => (x, y) => addButton(x, y, id.toString(), 'delVp' + id, () => rmVanishingPoint(parseInt(id, 10)))),
+    (x, y) => addButton(x, y, 'CLR', 'clearVp', () => clearVps()),
+  );
+}
+
+function addCubesRow(x: number, y: number) {
+  return addFlow(x, y, 8,
+    (x, y) => addText(x, y, 'CUBES'),
+    (x, y) => addButton(x, y, 'ADD', 'addCube', () => addCube({
+      persp: '1p',
+      position: [350, 600],
+      size: [100, 100],
+      vps: [parseInt(Object.keys(db.vps)[0], 10)]
+    })),
+    ...Object.keys(db.shapes).map(id => (x, y) => addButton(x, y, id, 'delCube' + id, () => rmCube(parseInt(id, 10)))),
+    (x, y) => addButton(x, y, 'CLR', 'clearCube', () => clearCubes()),
+  );
+}
+
+function addToolbar(x: number, y: number) {
   return addFlow(x, y, 8,
     (x, y) => addButton(x, y, '+1P', 'add1p', () => addCube({
       persp: '1p',

@@ -118,7 +118,19 @@ export const rmCube = (id: number): void => {
   });
 }
 
+export const rmVanishingPoint = (id: number): void => {
+  setDb(db => {
+    delete db.vps[id];
+    return db;
+  });
+}
+
 export const clearCubes = () => setDb((db) => {
   db.shapes = {};
+  return db;
+})
+
+export const clearVps = () => setDb((db) => {
+  db.vps = {};
   return db;
 })
