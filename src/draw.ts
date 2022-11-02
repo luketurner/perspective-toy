@@ -1,7 +1,8 @@
 import { addBox } from "./box";
 import { addCube, AppDB, clearCubes, Cube, db, Handler, rmCube, VanishingPoint } from "./db";
+import { drawUi } from "./ui";
 
-let ctx: CanvasRenderingContext2D;
+export let ctx: CanvasRenderingContext2D;
 
 export const redraw = (el: HTMLCanvasElement, db: AppDB) => {
   const newCtx = el.getContext('2d');
@@ -20,36 +21,6 @@ export const redraw = (el: HTMLCanvasElement, db: AppDB) => {
       drawRect2P(cube);
     }
   }
-}
-
-function drawUi() {
-  drawButton(16, 16, '+1P', 'add1p', () => addCube({
-    persp: '1p',
-    position: [350, 600],
-    size: [100, 100],
-    vps: [db.vps[2].id]
-  }));
-  drawButton(64, 16, '+2P', 'add2p', () => addCube({
-    persp: '2p',
-    position: [400, 200],
-    size: [100, 100],
-    vps: [db.vps[1].id, db.vps[3].id]
-  }));
-  drawButton(128, 16, 'CLEAR', 'rm', () => clearCubes());
-}
-
-function drawButton(x: number, y: number, text: string, id: string, onClick: () => void) {
-  ctx.save();
-  ctx.strokeStyle = 'black';
-  ctx.font = '18px monospace';
-  const padding = 2;
-  const m = ctx.measureText(text);
-  const w = m.width + padding * 2;
-  const h = m.actualBoundingBoxAscent + m.actualBoundingBoxDescent + padding * 2;
-  ctx.strokeRect(x, y, w, h);
-  ctx.fillText(text, x + padding, y + m.actualBoundingBoxAscent + padding);
-  addBox({ x, y, w, h, id, onClick });
-  ctx.restore();
 }
 
 function drawRect1P(cube: Cube) {
