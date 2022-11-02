@@ -58,18 +58,22 @@ function addText(x: number, y: number, text: string) {
 
 function addStack(x: number, y: number, gutter: number, ...fns) {
   let cy = y;
+  let mw = 0;
   for (const fn of fns) {
-    const { h } = fn(x, cy);
+    const { h, w } = fn(x, cy);
     cy += h + gutter;
+    mw = Math.max(w, mw);
   }
-  return { h: cy - y };
+  return { w: mw, h: cy - y };
 }
 
 function addFlow(x: number, y: number, gutter: number, ...fns) {
   let cx = x;
+  let mh = 0;
   for (const fn of fns) {
-    const { w } = fn(cx, y);
+    const { w, h } = fn(cx, y);
     cx += w + gutter;
+    mh = Math.max(h, mh);
   }
-  return { w: cx - x };
+  return { h: mh, w: cx - x };
 }
