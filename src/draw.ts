@@ -1,5 +1,5 @@
-import { addBox } from "./box";
-import { addCube, AppDB, clearCubes, Cube, db, Handler, rmCube, VanishingPoint } from "./db";
+import { addBox, OnDragEvent } from "./box";
+import { addCube, AppDB, clearCubes, Cube, db, Handler, rmCube, setHorizon, updateVanishingPoint, VanishingPoint } from "./db";
 import { drawUi } from "./ui";
 
 export let ctx: CanvasRenderingContext2D;
@@ -131,11 +131,23 @@ function drawVanishingLine(x: number, y: number, vp: VanishingPoint) {
 }
 
 function drawHorizon(y: number) {
-  line(0, y, ctx.canvas.width, y, "grey");
+  const w = ctx.canvas.width;
+  line(0, y, w, y, "grey");
+  const onDrag = (e: OnDragEvent) => {
+    setHorizon(e.y);
+  };
+  addBox({id: 'horizon', x: 0, y: y - 5, h: 10, w, onDrag});
+
 }
 
 function drawVanishingPoint(vp: VanishingPoint) {
-  dot(vp.posX, db.horizonY);
+  const x = vp.posX;
+  const y = db.horizonY
+  dot(x, y);
+  const onDrag = (e: OnDragEvent) => {
+    updateVanishingPoint(vp.id, { posX: e.x });
+  };
+  addBox({id: 'vp' + vp.id, x: x - 5, y: y - 5, h: 10, w: 10, onDrag});
 }
 
 function rect(x: number, y: number, width: number, height: number, color = "black") {

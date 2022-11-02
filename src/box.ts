@@ -9,6 +9,7 @@ export interface BoundingBox {
   w: number;
   h: number;
   onClick?: () => void;
+  onDrag?: (e: OnDragEvent) => void;
 }
 
 export const rmBox = (id: string) => {
@@ -21,16 +22,27 @@ export const addBox = (b: BoundingBox) => {
   boxes.push(b);
 }
 
-export const findBox = (cx: number, cy: number) => {
+export const findBoxes = (cx: number, cy: number): BoundingBox[] => {
+  const hits: BoundingBox[] = [];
   for (const box of boxes) {
     const { x, y, w, h } = box;
     if (cx >= x && cx <= x + w && cy >= y && cy <= y + h) {
-      return box;
+      hits.push(box);
     }
   }
+  return hits;
 }
+
+export const findBox = (cx: number, cy: number): BoundingBox | undefined => findBoxes(cx, cy).pop();
 
 export const boxHandler = (): Handler => ({
   before: () => { boxes = [] },
   id: 'boxHandler'
 });
+
+export interface OnDragEvent {
+  x: number;
+  y: number;
+  dx: number;
+  dy: number;
+}

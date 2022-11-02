@@ -1,3 +1,4 @@
+import { BoundingBox } from "./box";
 
 
 export let lastId = 1;
@@ -11,6 +12,8 @@ export interface AppDB {
   shapes: Record<number, Cube>;
   horizonY: number;
   vps: Record<number, VanishingPoint>;
+  dragging: boolean;
+  dragTarget: BoundingBox | undefined;
 }
 
 export interface Cube {
@@ -59,6 +62,8 @@ export let db: AppDB = {
   shapes: {},
   vps: {},
   horizonY: 0,
+  dragging: false,
+  dragTarget: undefined,
 };
 
 export const createVanishingPoint = (opts?: Partial<VanishingPoint>): VanishingPoint => ({
@@ -111,6 +116,15 @@ export const updateCube = (id: number, changes?: Partial<Cube>): void => {
   });
 };
 
+export const updateVanishingPoint = (id: number, changes?: Partial<VanishingPoint>): void => {
+  setDb(db => {
+    const old = db.vps[id];
+    if (!old) return db;
+    db.vps[id] = { ...old, ...changes };
+    return db;
+  });
+};
+
 export const rmCube = (id: number): void => {
   setDb(db => {
     delete db.shapes[id];
@@ -134,3 +148,15 @@ export const clearVps = () => setDb((db) => {
   db.vps = {};
   return db;
 })
+
+export const startDragging = (box: BoundingBox) => setDb((db) => {
+  db.dragging = true;
+  db.dragTarget = box;
+  return db;
+});
+
+export const stopDragging = () => setDb((db) => {
+  db.dragging = false;
+  db.dragTarget = undefined;
+  return db;
+});
