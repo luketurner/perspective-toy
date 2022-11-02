@@ -46,7 +46,7 @@ export const addHandler = (h: Handler) => {
 
 export const rmHandler = (id: string) => {
   const ix = handlers.findIndex(x => x.id === id);
-  if (ix) handlers.splice(ix, 1);
+  if (ix >= 0) handlers.splice(ix, 1);
 };
 
 export const setDb = (setter: AppDBSetter): void => {
@@ -110,3 +110,15 @@ export const updateCube = (id: number, changes?: Partial<Cube>): void => {
     return db;
   });
 };
+
+export const rmCube = (id: number): void => {
+  setDb(db => {
+    delete db.shapes[id];
+    return db;
+  });
+}
+
+export const clearCubes = () => setDb((db) => {
+  db.shapes = {};
+  return db;
+})
