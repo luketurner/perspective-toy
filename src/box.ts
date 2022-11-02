@@ -10,6 +10,8 @@ export interface BoundingBox {
   h: number;
   onClick?: () => void;
   onDrag?: (e: OnDragEvent) => void;
+  onHover?: () => void;
+  onUnhover?: () => void;
 }
 
 export const rmBox = (id: string) => {

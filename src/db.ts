@@ -14,6 +14,7 @@ export interface AppDB {
   vps: Record<number, VanishingPoint>;
   dragging: boolean;
   dragTarget: BoundingBox | undefined;
+  hoveredBoxes: Record<string,true>;
 }
 
 export interface Cube {
@@ -64,6 +65,7 @@ export let db: AppDB = {
   horizonY: 0,
   dragging: false,
   dragTarget: undefined,
+  hoveredBoxes: {},
 };
 
 export const createVanishingPoint = (opts?: Partial<VanishingPoint>): VanishingPoint => ({
@@ -160,3 +162,26 @@ export const stopDragging = () => setDb((db) => {
   db.dragTarget = undefined;
   return db;
 });
+
+export const isHovering = (id: string): boolean => {
+  return !!db.hoveredBoxes[id];
+}
+
+export const startHovering = (id: string) => {
+  setDb(db => {
+    // Note -- currently enforcing singleton hovering, feels more intuitive for interactivity.
+    db.hoveredBoxes = { [id]: true };
+    return db;
+  })
+}
+
+export const stopHovering = (id: string) => {
+  setDb(db => {
+    delete db.hoveredBoxes[id];
+    return db;
+  })
+}
+
+export const isDragging = (id: string) => {
+  return id && db.dragTarget?.id === id;
+}

@@ -1,5 +1,5 @@
-import { boxHandler, findBox } from "./box";
-import { addHandler, db, setHorizon, startDragging, stopDragging } from "./db";
+import { boxHandler, findBox, findBoxes } from "./box";
+import { addHandler, db, isHovering, setHorizon, startDragging, startHovering, stopDragging, stopHovering } from "./db";
 import { dot, drawHandler } from "./draw";
 
 const isCanvas = (el: any): el is HTMLCanvasElement => el?.nodeName === 'CANVAS';
@@ -24,6 +24,15 @@ function handleMouseUp(x: number, y: number) {
 function handleMouseMove(x: number, y: number, dx: number, dy: number) {
   if (db.dragging) {
     db.dragTarget?.onDrag?.({ x, y, dx, dy });
+  }
+
+  const boxes = findBoxes(x, y);
+  for (const box of boxes) {
+    if (box && !isHovering(box.id)) startHovering(box.id);
+  }
+
+  for (const id of Object.keys(db.hoveredBoxes)) {
+    if (!boxes.find(b => b.id === id)) stopHovering(id);
   }
 }
 
