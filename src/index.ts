@@ -1,4 +1,4 @@
-import { findBox } from "./box";
+import { boxHandler, findBox } from "./box";
 import { addCube, addHandler, addVanishingPoint, setHorizon } from "./db";
 import { dot, drawHandler } from "./draw";
 
@@ -16,6 +16,7 @@ const main = (el) => {
   el.addEventListener('click', (ev) => {
     handleClick(ev.offsetX, ev.offsetY)
   });
+  addHandler(boxHandler());
   addHandler(drawHandler(el));
   setHorizon(400);
   const vp1 = addVanishingPoint({posX: 200});

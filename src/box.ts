@@ -1,4 +1,6 @@
-const boxes: BoundingBox[] = [];
+import { Handler } from "./db";
+
+let boxes: BoundingBox[] = [];
 
 export interface BoundingBox {
   id: string;
@@ -27,3 +29,8 @@ export const findBox = (cx: number, cy: number) => {
     }
   }
 }
+
+export const boxHandler = (): Handler => ({
+  before: () => { boxes = [] },
+  id: 'boxHandler'
+});
