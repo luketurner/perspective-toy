@@ -12,15 +12,15 @@ export const redraw = (el: HTMLCanvasElement, db: AppDB) => {
   clear();
   drawUi();
   drawHorizon(db.horizonY);
-  for (const vp of Object.values(db.vps)) {
-    drawVanishingPoint(vp);
-  }
   for (const cube of Object.values(db.shapes)) {
     if (cube.persp === '1p') {
       drawRect1P(cube);
     } else {
       drawRect2P(cube);
     }
+  }
+  for (const vp of Object.values(db.vps)) {
+    drawVanishingPoint(vp);
   }
 }
 
