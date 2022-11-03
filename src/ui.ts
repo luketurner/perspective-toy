@@ -1,6 +1,6 @@
 import { addBox } from "./box";
 import { colorBlue, colorDarkBlue, colorFore, colorHover } from "./colors";
-import { addCube, addVanishingPoint, clearCubes, clearVps, Cube, db, isHovering, rmCube, rmVanishingPoint, VanishingPoint } from "./db";
+import { addCube, addVanishingPoint, clearCubes, clearVps, Cube, db, isHovering, rmCube, rmVanishingPoint, updateCube, VanishingPoint } from "./db";
 import { ctx } from "./draw";
 
 
@@ -38,9 +38,21 @@ function addCubesRow(x: number, y: number) {
       })
     }),
     ...Object.keys(db.shapes).map((id, ix) => (x, y) => addButton(x, y, (ix + 1).toString(), 'delCube' + id, () => {
+      const numId = parseInt(id, 10);
       const cube = db.shapes[id];
-      rmCube(parseInt(id, 10));
-      for (const vp of cube.vps) { rmVanishingPoint(vp); }
+      if (cube.persp === '1p') {
+        const vp1 = addVanishingPoint({ posX: 200, });
+        const vp2 = addVanishingPoint({ posX: 600, });
+        const oldVps = cube.vps;
+        updateCube(numId, {
+          persp: '2p',
+          vps: [ vp1.id, vp2.id ]
+        })
+        for (const vp of oldVps) { rmVanishingPoint(vp); }
+      } else {
+        rmCube(numId);
+        for (const vp of cube.vps) { rmVanishingPoint(vp); }
+      }
     })),
     (x, y) => addButton(x, y, 'CLR', 'clearCube', () => {
       clearCubes();
