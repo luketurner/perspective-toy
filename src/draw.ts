@@ -1,6 +1,6 @@
 import { addBox, OnDragEvent } from "./box";
 import { colorSubtle, colorDragging, colorHover, colorFore } from "./colors";
-import { addCube, AppDB, clearCubes, Cube, db, Handler, isHovering, isDragging, setHorizon, updateVanishingPoint, VanishingPoint } from "./db";
+import { addCube, AppDB, clearCubes, Cube, db, Handler, isHovering, isDragging, setHorizon, updateVanishingPoint, VanishingPoint, updateCube } from "./db";
 import { drawUi } from "./ui";
 
 export let ctx: CanvasRenderingContext2D;
@@ -22,6 +22,13 @@ export const redraw = (el: HTMLCanvasElement, db: AppDB) => {
       drawRect2P(cube);
     }
   }
+}
+
+function dragHandle(id: string, x: number, y: number, onDrag: (e: OnDragEvent) => void) {
+  const hover = isHovering(id);
+  const drag = isDragging(id);
+  dot(x, y, drag ? colorDragging : hover ? colorHover : colorFore);
+  addBox({id, x: x - 5, y: y - 5, h: 10, w: 10, onDrag});
 }
 
 function drawRect1P(cube: Cube) {
@@ -48,6 +55,10 @@ function drawRect1P(cube: Cube) {
   line(bx1, by1, bx3, by3);
   line(bx2, by2, bx4, by4);
   line(bx3, by3, bx4, by4);
+
+  dragHandle('move-' + cube.id, x, y, (e) => {
+    updateCube(cube.id, { position: [e.x, e.y]})
+  });
 }
 
 function drawRect2P(cube: Cube) {
@@ -93,6 +104,10 @@ function drawRect2P(cube: Cube) {
   line(bx1, by1, bx3, by3);
   line(bx2, by2, bx4, by4);
   line(ix1, iy1, ix2, iy2);
+
+  dragHandle('move-' + cube.id, x, y, (e) => {
+    updateCube(cube.id, { position: [e.x, e.y]})
+  });
 }
 
 function moveToVanishingPoint(x: number, y: number, plen: number, vp: VanishingPoint) {
