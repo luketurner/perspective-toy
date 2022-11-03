@@ -5,11 +5,13 @@ import { ctx } from "./draw";
 
 
 export function drawUi() {
+  ctx.font = '20px monospace';
   const header = addStack(16, 16, 8,
     // (x, y) => addToolbar(x, y),
     // (x, y) => addVpRow(x, y),
     (x, y) => addCubesRow(x, y),
   );
+  ctx.font = '16px monospace';
   const footer = addFlow(16, 750, 8,
     (x, y) => addLink(x, y, 'luketurner/perspective-toy', 'footer-github', 'https://github.com/luketurner/perspective-toy'),
     (x, y) => addText(x, y, 'Copyright 2022 Luke Turner'),
@@ -84,8 +86,7 @@ function addButton(x: number, y: number, text: string, id: string, onClick: () =
   const hover = isHovering(id);
   ctx.fillStyle = hover ? colorHover : colorFore;
   ctx.strokeStyle = hover ? colorHover : colorFore;
-  ctx.font = '18px monospace';
-  const padding = 2;
+  const padding = 4;
   const m = ctx.measureText(text);
   const w = m.width + padding * 2;
   const h = m.actualBoundingBoxAscent + m.actualBoundingBoxDescent + padding * 2;
@@ -101,8 +102,7 @@ function addLink(x: number, y: number, text: string, id: string, url: string) {
   const hover = isHovering(id);
   ctx.fillStyle = hover ? colorDarkBlue : colorBlue;
   ctx.strokeStyle = hover ? colorDarkBlue : colorBlue;
-  ctx.font = '18px monospace';
-  const padding = 2;
+  const padding = 4;
   const m = ctx.measureText(text);
   const w = m.width + padding * 2;
   const h = m.actualBoundingBoxAscent + m.actualBoundingBoxDescent + padding * 2;
@@ -121,8 +121,7 @@ function addLink(x: number, y: number, text: string, id: string, url: string) {
 function addText(x: number, y: number, text: string) {
   ctx.save();
   ctx.fillStyle = colorFore;
-  ctx.font = '18px monospace';
-  const padding = 2;
+  const padding = 4;
   const m = ctx.measureText(text);
   const w = m.width + padding * 2;
   const h = m.actualBoundingBoxAscent + m.actualBoundingBoxDescent + padding * 2;
