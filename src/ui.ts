@@ -1,14 +1,19 @@
 import { addBox } from "./box";
-import { addCube, addVanishingPoint, clearCubes, clearVps, Cube, db, rmCube, rmVanishingPoint, VanishingPoint } from "./db";
+import { colorBlue, colorDarkBlue, colorFore, colorHover } from "./colors";
+import { addCube, addVanishingPoint, clearCubes, clearVps, Cube, db, isHovering, rmCube, rmVanishingPoint, VanishingPoint } from "./db";
 import { ctx } from "./draw";
 
 
 export function drawUi() {
-  return addStack(16, 16, 8,
-    (x, y) => addText(x, y, 'PERSPECTIVE TOY'),
+  const header = addStack(16, 16, 8,
+    (x, y) => addText(x, y, 'PERSPECTIVE'),
     // (x, y) => addToolbar(x, y),
     (x, y) => addVpRow(x, y),
     (x, y) => addCubesRow(x, y),
+  );
+  const footer = addFlow(16, 750, 8,
+    (x, y) => addLink(x, y, 'luketurner/perspective-toy', 'footer-github', 'https://github.com/luketurner/perspective-toy'),
+    (x, y) => addText(x, y, 'Copyright 2022 Luke Turner'),
   );
 };
 
@@ -55,7 +60,9 @@ function addToolbar(x: number, y: number) {
 
 function addButton(x: number, y: number, text: string, id: string, onClick: () => void) {
   ctx.save();
-  ctx.strokeStyle = 'black';
+  const hover = isHovering(id);
+  ctx.fillStyle = hover ? colorHover : colorFore;
+  ctx.strokeStyle = hover ? colorHover : colorFore;
   ctx.font = '18px monospace';
   const padding = 2;
   const m = ctx.measureText(text);
@@ -63,14 +70,36 @@ function addButton(x: number, y: number, text: string, id: string, onClick: () =
   const h = m.actualBoundingBoxAscent + m.actualBoundingBoxDescent + padding * 2;
   ctx.strokeRect(x, y, w, h);
   ctx.fillText(text, x + padding, y + m.actualBoundingBoxAscent + padding);
-  addBox({ x, y, w, h, id, onClick });
   ctx.restore();
+  addBox({ x, y, w, h, id, onClick });
+  return { w, h };
+}
+
+function addLink(x: number, y: number, text: string, id: string, url: string) {
+  ctx.save();
+  const hover = isHovering(id);
+  ctx.fillStyle = hover ? colorDarkBlue : colorBlue;
+  ctx.strokeStyle = hover ? colorDarkBlue : colorBlue;
+  ctx.font = '18px monospace';
+  const padding = 2;
+  const m = ctx.measureText(text);
+  const w = m.width + padding * 2;
+  const h = m.actualBoundingBoxAscent + m.actualBoundingBoxDescent + padding * 2;
+  ctx.fillText(text, x + padding, y + m.actualBoundingBoxAscent + padding);
+  ctx.beginPath();
+  ctx.moveTo(x + padding, y + m.actualBoundingBoxAscent + padding + 2);
+  ctx.lineTo(x + w - padding, y + m.actualBoundingBoxAscent + padding + 2);
+  ctx.stroke();
+  ctx.restore();
+  addBox({ x, y, w, h, id, onClick: () => {
+    window.open(url, '_blank');
+  }});
   return { w, h };
 }
 
 function addText(x: number, y: number, text: string) {
   ctx.save();
-  ctx.strokeStyle = 'black';
+  ctx.fillStyle = colorFore;
   ctx.font = '18px monospace';
   const padding = 2;
   const m = ctx.measureText(text);

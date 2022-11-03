@@ -1,4 +1,5 @@
 import { addBox, OnDragEvent } from "./box";
+import { colorSubtle, colorDragging, colorHover, colorFore } from "./colors";
 import { addCube, AppDB, clearCubes, Cube, db, Handler, isHovering, isDragging, setHorizon, updateVanishingPoint, VanishingPoint } from "./db";
 import { drawUi } from "./ui";
 
@@ -9,8 +10,8 @@ export const redraw = (el: HTMLCanvasElement, db: AppDB) => {
   if (!newCtx) throw new Error(`Cannot find 2D Context for element: ${el}`);
   ctx = newCtx;
   clear();
-  drawHorizon(db.horizonY);
   drawUi();
+  drawHorizon(db.horizonY);
   for (const vp of Object.values(db.vps)) {
     drawVanishingPoint(vp);
   }
@@ -127,7 +128,7 @@ function vpCoords(vp: VanishingPoint) {
 }
 
 function drawVanishingLine(x: number, y: number, vp: VanishingPoint) {
-  line(x, y, vp.posX, db.horizonY, "grey");
+  line(x, y, vp.posX, db.horizonY, colorSubtle);
 }
 
 function drawHorizon(y: number) {
@@ -135,7 +136,7 @@ function drawHorizon(y: number) {
   const boxId = 'horizon';
   const hover = isHovering(boxId);
   const drag = isDragging(boxId);
-  line(0, y, w, y, drag ? 'orange' : hover ? 'blue' : 'grey');
+  line(0, y, w, y, drag ? colorDragging : hover ? colorHover : colorFore);
   const onDrag = (e: OnDragEvent) => {
     setHorizon(e.y);
   };
@@ -149,39 +150,45 @@ function drawVanishingPoint(vp: VanishingPoint) {
   const boxId = 'vp' + vp.id;
   const hover = isHovering(boxId);
   const drag = isDragging(boxId);
-  dot(x, y, drag ? 'orange' : hover ? 'blue' : 'black');
+  dot(x, y, drag ? colorDragging : hover ? colorHover : colorFore);
   const onDrag = (e: OnDragEvent) => {
     updateVanishingPoint(vp.id, { posX: e.x });
   };
   addBox({id: boxId, x: x - 5, y: y - 5, h: 10, w: 10, onDrag});
 }
 
-function rect(x: number, y: number, width: number, height: number, color = "black") {
+function rect(x: number, y: number, width: number, height: number, color = colorFore) {
+  ctx.save();
+  ctx.strokeStyle = color;
   ctx.beginPath();
   ctx.rect(x, y, width, height);
-  ctx.strokeStyle = color;
   ctx.stroke();
+  ctx.restore();
 }
 
-function line(x1: number, y1: number, x2: number, y2: number, color = "black") {
+function line(x1: number, y1: number, x2: number, y2: number, color = colorFore) {
+  ctx.save();
+  ctx.strokeStyle = color;
   ctx.beginPath();
   ctx.moveTo(x1, y1);
   ctx.lineTo(x2, y2);
-  ctx.strokeStyle = color;
   ctx.stroke();
+  ctx.restore();
 }
 
-export function dot(x: number, y: number, color = "black") {
+export function dot(x: number, y: number, color = colorFore) {
   ctx.save();
+  ctx.fillStyle = color;
   ctx.beginPath();
   ctx.ellipse(x, y, 4, 4, 0, 0, 2 * Math.PI);
-  ctx.fillStyle = color;
   ctx.fill();
   ctx.restore();
 }
 
 function clear() {
+  ctx.save();
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+  ctx.restore();
 }
 
 export const drawHandler = (el: HTMLCanvasElement): Handler => ({
