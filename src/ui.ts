@@ -1,5 +1,5 @@
 import { addBox } from "./box";
-import { colorBlue, colorDarkBlue, colorFore, colorHover } from "./colors";
+import { colorBlue, colorDarkBlue, colorFore, colorHover, colorRed } from "./colors";
 import { addCube, addVanishingPoint, clearCubes, clearVps, Cube, db, isHovering, rmCube, rmVanishingPoint, updateCube, VanishingPoint } from "./db";
 import { ctx } from "./draw";
 
@@ -18,15 +18,6 @@ export function drawUi() {
   );
 };
 
-function addVpRow(x: number, y: number) {
-  return addFlow(x, y, 8,
-    (x, y) => addText(x, y, 'V.PTS'),
-    (x, y) => addButton(x, y, 'ADD', 'addVp', () => addVanishingPoint({ posX: 100 })),
-    ...Object.keys(db.vps).map((id, ix) => (x, y) => addButton(x, y, (ix + 1).toString(), 'delVp' + id, () => rmVanishingPoint(parseInt(id, 10)))),
-    (x, y) => addButton(x, y, 'CLR', 'clearVp', () => clearVps()),
-  );
-}
-
 function addCubesRow(x: number, y: number) {
   return addFlow(x, y, 8,
     (x, y) => addText(x, y, 'CUBES'),
@@ -43,25 +34,7 @@ function addCubesRow(x: number, y: number) {
     (x, y) => addButton(x, y, 'CLR', 'clearCube', () => {
       clearCubes();
       clearVps();
-    }),
-  );
-}
-
-function addToolbar(x: number, y: number) {
-  return addFlow(x, y, 8,
-    (x, y) => addButton(x, y, '+1P', 'add1p', () => addCube({
-      persp: '1p',
-      position: [350, 600],
-      size: [100, 100],
-      vps: [db.vps[2].id]
-    })),
-    (x, y) => addButton(x, y, '+2P', 'add2p', () => addCube({
-      persp: '2p',
-      position: [400, 200],
-      size: [100, 100],
-      vps: [db.vps[1].id, db.vps[3].id]
-    })),
-    (x, y) => addButton(x, y, 'CLEAR', 'clear', () => clearCubes()),
+    }, colorRed),
   );
 }
 
@@ -100,11 +73,11 @@ function addCubeBtn(x: number, y: number, cubeId: string, text: string) {
   return { w, h };
 }
 
-function addButton(x: number, y: number, text: string, id: string, onClick: () => void) {
+function addButton(x: number, y: number, text: string, id: string, onClick: () => void, hoverColor?: string) {
   ctx.save();
   const hover = isHovering(id);
-  ctx.fillStyle = hover ? colorHover : colorFore;
-  ctx.strokeStyle = hover ? colorHover : colorFore;
+  ctx.fillStyle = hover ? (hoverColor || colorHover) : colorFore;
+  ctx.strokeStyle = hover ? (hoverColor || colorHover) : colorFore;
   const padding = 4;
   const m = ctx.measureText(text);
   const w = m.width + padding * 2;

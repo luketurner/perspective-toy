@@ -1,5 +1,5 @@
 import { addBox, OnDragEvent } from "./box";
-import { colorSubtle, colorDragging, colorHover, colorFore, colorHoverSubtle } from "./colors";
+import { colorSubtle, colorDragging, colorHover, colorFore, colorHoverSubtle, colorRed } from "./colors";
 import { addCube, AppDB, clearCubes, Cube, db, Handler, isHovering, isDragging, setHorizon, updateVanishingPoint, VanishingPoint, updateCube } from "./db";
 import { drawUi } from "./ui";
 
@@ -42,6 +42,7 @@ function dragHandle(cube: Cube, x: number, y: number, onDrag: (e: OnDragEvent) =
 
 function drawRect1P(cube: Cube) {
   ctx.save();
+  const delHover = isHovering('clearCube');
   const hover = isHovering('cubeBtn' + cube.id);
   const depth = 0.25; // TODO
   const [x, y] = cube.position;
@@ -54,7 +55,7 @@ function drawRect1P(cube: Cube) {
   drawVanishingLine(x + width, y,         vp);
   drawVanishingLine(x + width, y + width, vp);
   
-  ctx.strokeStyle = hover ? colorHover : colorFore;
+  ctx.strokeStyle = delHover ? colorRed : hover ? colorHover : colorFore;
   const [bx1, by1] = moveToVanishingPoint(x, y, depth, vp);
   const [bx2, by2] = moveToVanishingPoint(x + width, y, depth, vp);
   const [bx3, by3] = moveToVanishingPoint(x, y + width, depth, vp);
@@ -77,6 +78,7 @@ function drawRect1P(cube: Cube) {
 
 function drawRect2P(cube: Cube) {
   ctx.save();
+  const delHover = isHovering('clearCube');
   const hover = isHovering('cubeBtn' + cube.id);
   const depth = 0.25; // TODO
   const [x, y] = cube.position;
@@ -107,7 +109,7 @@ function drawRect2P(cube: Cube) {
   drawVanishingLine(ix2, iy2, vp1);
   drawVanishingLine(ix2, iy2, vp2);
 
-  ctx.strokeStyle = hover ? colorHover : colorFore;
+  ctx.strokeStyle = delHover ? colorRed : hover ? colorHover : colorFore;
 
   // perspective lines
   line(x, y, bx1, by1);

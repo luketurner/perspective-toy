@@ -10,3 +10,4 @@ export const colorHoverSubtle = '#a8a29e'; // stone-400
 export const    colorDragging = '#4d7c0f'; // lime-700
 export const        colorBlue = '#6366f1'; // indigo-500
 export const    colorDarkBlue = '#4338ca'; // indigo-700
+export const         colorRed = '#dc2626'; // red-600
