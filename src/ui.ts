@@ -39,23 +39,7 @@ function addCubesRow(x: number, y: number) {
         vps: [vp.id]
       })
     }),
-    ...Object.keys(db.shapes).map((id, ix) => (x, y) => addButton(x, y, (ix + 1).toString(), 'delCube' + id, () => {
-      const numId = parseInt(id, 10);
-      const cube = db.shapes[id];
-      if (cube.persp === '1p') {
-        const vp1 = addVanishingPoint({ posX: 200, });
-        const vp2 = addVanishingPoint({ posX: 600, });
-        const oldVps = cube.vps;
-        updateCube(numId, {
-          persp: '2p',
-          vps: [ vp1.id, vp2.id ]
-        })
-        for (const vp of oldVps) { rmVanishingPoint(vp); }
-      } else {
-        rmCube(numId);
-        for (const vp of cube.vps) { rmVanishingPoint(vp); }
-      }
-    })),
+    ...Object.keys(db.shapes).map((id, ix) => (x, y) => addCubeBtn(x, y, id, (ix + 1).toString())),
     (x, y) => addButton(x, y, 'CLR', 'clearCube', () => {
       clearCubes();
       clearVps();
@@ -79,6 +63,41 @@ function addToolbar(x: number, y: number) {
     })),
     (x, y) => addButton(x, y, 'CLEAR', 'clear', () => clearCubes()),
   );
+}
+
+function addCubeBtn(x: number, y: number, cubeId: string, text: string) {
+  ctx.save();
+  const btnId = 'cubeBtn' + cubeId;
+  const handleId = 'cubeHandle' + cubeId;
+  const hover = isHovering(btnId) || isHovering(handleId);
+  ctx.fillStyle = hover ? colorHover : colorFore;
+  ctx.strokeStyle = hover ? colorHover : colorFore;
+  const padding = 4;
+  const m = ctx.measureText(text);
+  const w = m.width + padding * 2;
+  const h = m.actualBoundingBoxAscent + m.actualBoundingBoxDescent + padding * 2;
+  ctx.strokeRect(x, y, w, h);
+  ctx.fillText(text, x + padding, y + m.actualBoundingBoxAscent + padding);
+  ctx.restore();
+  const onClick = () => {
+    const numId = parseInt(cubeId, 10);
+    const cube = db.shapes[cubeId];
+    if (cube.persp === '1p') {
+      const vp1 = addVanishingPoint({ posX: 200, });
+      const vp2 = addVanishingPoint({ posX: 600, });
+      const oldVps = cube.vps;
+      updateCube(numId, {
+        persp: '2p',
+        vps: [ vp1.id, vp2.id ]
+      })
+      for (const vp of oldVps) { rmVanishingPoint(vp); }
+    } else {
+      rmCube(numId);
+      for (const vp of cube.vps) { rmVanishingPoint(vp); }
+    }
+  };
+  addBox({ x, y, w, h, id: btnId, onClick });
+  return { w, h };
 }
 
 function addButton(x: number, y: number, text: string, id: string, onClick: () => void) {
