@@ -1,5 +1,16 @@
-import { Handler } from "./db";
-
+/**
+ * Provides the ability to define "bounding boxes", which are areas of the UI that are interactive / responsive to user actions.
+ * Bounding boxes are defined with a variety of on* handlers, e.g. onClick, onDrag, etc. -- when the action happens within the box,
+ * the bounding box's handler is called.
+ * 
+ * For example, to make a clickable rectangle:
+ * 
+ * addBox({ id: 'mybox', x: 0, y: 0, w: 100, h: 100, onClick: () => console.log("clicked!")})
+ * 
+ * Box IDs are opaque strings that identify a box. Each box must have a unique ID.
+ * 
+ * Since boxes can change when UI is redrawn, clearBoxes() should be called before redrawing.
+ */
 let boxes: BoundingBox[] = [];
 
 export interface BoundingBox {
@@ -37,10 +48,7 @@ export const findBoxes = (cx: number, cy: number): BoundingBox[] => {
 
 export const findBox = (cx: number, cy: number): BoundingBox | undefined => findBoxes(cx, cy).pop();
 
-export const boxHandler = (): Handler => ({
-  before: () => { boxes = [] },
-  id: 'boxHandler'
-});
+export const clearBoxes = () => { boxes = []; };
 
 export interface OnDragEvent {
   x: number;

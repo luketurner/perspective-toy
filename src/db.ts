@@ -1,5 +1,17 @@
-import { BoundingBox } from "./box";
+/**
+ * Defines types and functions for managing application state in global "App DB" object.
+ * 
+ * Provides support for defining "handlers" that will run whenever db is updated, both before and after the update is performed.
+ * Technically handlers are "interceptors" if you're familiar with the Interceptor pattern.
+ * 
+ * Updates to App DB or any sub-objects must always be done within setDb() calls, in order for the change
+ * to be tracked and trigger update handlers. Generally, updates are encapsulated in helper functions (e.g. addCube() or setHorizon())
+ * that handle calling setDb() internally.
+ * 
+ * Reads, however, have no particular rules. The `db` object can be imported and read freely at any time by any other module.
+ */
 
+import { BoundingBox } from "./box";
 
 export let lastId = 1;
 

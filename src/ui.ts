@@ -1,17 +1,22 @@
+/**
+ * Exports a drawUi() function that draws the "HUD" elements (i.e. the buttons, text, etc. in the header/footer) into the canvas.
+ * 
+ * OF interesting note here are the `addStack` and `addFlow` functions that can be used to align things in columns or rows, respectively.
+ */
 import { addBox } from "./box";
+import { fillStyle, fillText, font, measureText, restore, save, strokeLine, strokeRect, strokeStyle } from "./canvas";
 import { colorBlue, colorDarkBlue, colorFore, colorHover, colorRed } from "./colors";
 import { addCube, addVanishingPoint, clearCubes, clearVps, Cube, db, isHovering, rmCube, rmVanishingPoint, updateCube, VanishingPoint } from "./db";
-import { ctx } from "./draw";
 
 
 export function drawUi() {
-  ctx.font = '20px monospace';
+  font('20px monospace');
   const header = addStack(16, 16, 8,
     // (x, y) => addToolbar(x, y),
     // (x, y) => addVpRow(x, y),
     (x, y) => addCubesRow(x, y),
   );
-  ctx.font = '16px monospace';
+  font('16px monospace');
   const footer = addFlow(16, 750, 8,
     (x, y) => addLink(x, y, 'luketurner/perspective-toy', 'footer-github', 'https://github.com/luketurner/perspective-toy'),
     (x, y) => addText(x, y, 'Copyright 2022 Luke Turner'),
@@ -39,19 +44,19 @@ function addCubesRow(x: number, y: number) {
 }
 
 function addCubeBtn(x: number, y: number, cubeId: string, text: string) {
-  ctx.save();
+  save();
   const btnId = 'cubeBtn' + cubeId;
   const handleId = 'cubeHandle' + cubeId;
   const hover = isHovering(btnId) || isHovering(handleId);
-  ctx.fillStyle = hover ? colorHover : colorFore;
-  ctx.strokeStyle = hover ? colorHover : colorFore;
+  fillStyle(hover ? colorHover : colorFore);
+  strokeStyle(hover ? colorHover : colorFore);
   const padding = 4;
-  const m = ctx.measureText(text);
+  const m = measureText(text);
   const w = m.width + padding * 2;
   const h = m.actualBoundingBoxAscent + m.actualBoundingBoxDescent + padding * 2;
-  ctx.strokeRect(x, y, w, h);
-  ctx.fillText(text, x + padding, y + m.actualBoundingBoxAscent + padding);
-  ctx.restore();
+  strokeRect(x, y, w, h);
+  fillText(text, x + padding, y + m.actualBoundingBoxAscent + padding);
+  restore();
   const onClick = () => {
     const numId = parseInt(cubeId, 10);
     const cube = db.shapes[cubeId];
@@ -74,36 +79,36 @@ function addCubeBtn(x: number, y: number, cubeId: string, text: string) {
 }
 
 function addButton(x: number, y: number, text: string, id: string, onClick: () => void, hoverColor?: string) {
-  ctx.save();
+  save();
   const hover = isHovering(id);
-  ctx.fillStyle = hover ? (hoverColor || colorHover) : colorFore;
-  ctx.strokeStyle = hover ? (hoverColor || colorHover) : colorFore;
+  fillStyle(hover ? (hoverColor || colorHover) : colorFore);
+  strokeStyle(hover ? (hoverColor || colorHover) : colorFore);
   const padding = 4;
-  const m = ctx.measureText(text);
+  const m = measureText(text);
   const w = m.width + padding * 2;
   const h = m.actualBoundingBoxAscent + m.actualBoundingBoxDescent + padding * 2;
-  ctx.strokeRect(x, y, w, h);
-  ctx.fillText(text, x + padding, y + m.actualBoundingBoxAscent + padding);
-  ctx.restore();
+  strokeRect(x, y, w, h);
+  fillText(text, x + padding, y + m.actualBoundingBoxAscent + padding);
+  restore();
   addBox({ x, y, w, h, id, onClick });
   return { w, h };
 }
 
 function addLink(x: number, y: number, text: string, id: string, url: string) {
-  ctx.save();
+  save();
   const hover = isHovering(id);
-  ctx.fillStyle = hover ? colorDarkBlue : colorBlue;
-  ctx.strokeStyle = hover ? colorDarkBlue : colorBlue;
+  fillStyle(hover ? colorDarkBlue : colorBlue);
+  strokeStyle(hover ? colorDarkBlue : colorBlue);
   const padding = 4;
-  const m = ctx.measureText(text);
+  const m = measureText(text);
   const w = m.width + padding * 2;
   const h = m.actualBoundingBoxAscent + m.actualBoundingBoxDescent + padding * 2;
-  ctx.fillText(text, x + padding, y + m.actualBoundingBoxAscent + padding);
-  ctx.beginPath();
-  ctx.moveTo(x + padding, y + m.actualBoundingBoxAscent + padding + 2);
-  ctx.lineTo(x + w - padding, y + m.actualBoundingBoxAscent + padding + 2);
-  ctx.stroke();
-  ctx.restore();
+  fillText(text, x + padding, y + m.actualBoundingBoxAscent + padding);
+  strokeLine(
+    x + padding, y + m.actualBoundingBoxAscent + padding + 2,
+    x + w - padding, y + m.actualBoundingBoxAscent + padding + 2
+  )
+  restore();
   addBox({ x, y, w, h, id, onClick: () => {
     window.open(url, '_blank');
   }});
@@ -111,14 +116,14 @@ function addLink(x: number, y: number, text: string, id: string, url: string) {
 }
 
 function addText(x: number, y: number, text: string) {
-  ctx.save();
-  ctx.fillStyle = colorFore;
+  save();
+  fillStyle(colorFore);
   const padding = 4;
-  const m = ctx.measureText(text);
+  const m = measureText(text);
   const w = m.width + padding * 2;
   const h = m.actualBoundingBoxAscent + m.actualBoundingBoxDescent + padding * 2;
-  ctx.fillText(text, x + padding, y + m.actualBoundingBoxAscent + padding);
-  ctx.restore();
+  fillText(text, x + padding, y + m.actualBoundingBoxAscent + padding);
+  restore();
   return { w, h };
 }
 
