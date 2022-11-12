@@ -8,7 +8,7 @@
 import { clearBoxes, findBox, findBoxes } from "./box";
 import { db, Handler, isHovering, startDragging, startHovering, stopDragging, stopHovering } from "./db";
 
-let ctx: CanvasRenderingContext2D;
+export let ctx: CanvasRenderingContext2D;
 let renderFn: () => void;
 
 export const isCanvas = (el: any): el is HTMLCanvasElement => el?.nodeName === 'CANVAS';

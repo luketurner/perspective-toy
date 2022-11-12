@@ -1,3 +1,5 @@
+import { ctx } from "./canvas";
+
 /**
  * Provides the ability to define "bounding boxes", which are areas of the UI that are interactive / responsive to user actions.
  * Bounding boxes are defined with a variety of on* handlers, e.g. onClick, onDrag, etc. -- when the action happens within the box,
@@ -15,10 +17,11 @@ let boxes: BoundingBox[] = [];
 
 export interface BoundingBox {
   id: string;
-  x: number;
-  y: number;
-  w: number;
-  h: number;
+  x?: number;
+  y?: number;
+  w?: number;
+  h?: number;
+  path?: Path2D | Path2D[];
   onClick?: () => void;
   onDrag?: (e: OnDragEvent) => void;
   onHover?: () => void;
@@ -38,10 +41,24 @@ export const addBox = (b: BoundingBox) => {
 export const findBoxes = (cx: number, cy: number): BoundingBox[] => {
   const hits: BoundingBox[] = [];
   for (const box of boxes) {
-    const { x, y, w, h } = box;
-    if (cx >= x && cx <= x + w && cy >= y && cy <= y + h) {
-      hits.push(box);
+    if (box.path) {
+      if (Array.isArray(box.path)) {
+        for (const p of box.path) {
+          if (ctx.isPointInPath(p, cx, cy)) {
+            hits.push(box);
+            break;
+          }
+        }
+      } else {
+        if (ctx.isPointInPath(box.path, cx, cy)) hits.push(box);
+      }
+    } else {
+      const { x, y, w, h } = box;
+      if (cx >= x && cx <= x + w && cy >= y && cy <= y + h) {
+        hits.push(box);
+      }
     }
+
   }
   return hits;
 }
