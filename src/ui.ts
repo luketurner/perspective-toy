@@ -46,7 +46,7 @@ function addCubesRow(x: number, y: number) {
 function addCubeBtn(x: number, y: number, cubeId: string, text: string) {
   save();
   const btnId = 'cubeBtn' + cubeId;
-  const handleId = 'cubeHandle' + cubeId;
+  const handleId = 'cube' + cubeId;
   const hover = isHovering(btnId) || isHovering(handleId);
   fillStyle(hover ? colorHover : colorFore);
   strokeStyle(hover ? colorHover : colorFore);

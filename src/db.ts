@@ -130,6 +130,18 @@ export const updateCube = (id: number, changes?: Partial<Cube>): void => {
   });
 };
 
+export const translateCube = (id: number, x: number, y: number): void => {
+  setDb(db => {
+    const oldCube = db.shapes[id];
+    if (!oldCube) return db;
+    oldCube.position = [
+      oldCube.position[0] + x,
+      oldCube.position[1] + y,
+    ];
+    return db;
+  });
+};
+
 export const updateVanishingPoint = (id: number, changes?: Partial<VanishingPoint>): void => {
   setDb(db => {
     const old = db.vps[id];

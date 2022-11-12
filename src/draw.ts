@@ -3,9 +3,9 @@
  * when you want the app to draw. (Note drawApp doesn't do any "cleanup" like clearing the canvas, so do that first!)
  */
 import { addBox, OnDragEvent } from "./box";
-import { canvasWidth, fillDot, fillStyle, strokeLine, strokeRect, restore, save, strokeStyle } from "./canvas";
+import { canvasWidth, fillDot, fillStyle, strokeLine, strokeRect, restore, save, strokeStyle, ctx } from "./canvas";
 import { colorSubtle, colorDragging, colorHover, colorFore, colorHoverSubtle, colorRed } from "./colors";
-import { Cube, db, isHovering, isDragging, setHorizon, updateVanishingPoint, VanishingPoint, updateCube } from "./db";
+import { Cube, db, isHovering, isDragging, setHorizon, updateVanishingPoint, VanishingPoint, translateCube } from "./db";
 import { drawUi } from "./ui";
 
 export const drawApp = () => {
@@ -25,58 +25,96 @@ export const drawApp = () => {
   }
 }
 
-function dragHandle(cube: Cube, x: number, y: number, onDrag: (e: OnDragEvent) => void) {
-  save();
-  const handleId = 'cubeHandle' + cube.id;
-  const btnId = 'cubeBtn' + cube.id;
-  const hover = isHovering(handleId) || isHovering(btnId);
-  const drag = isDragging(handleId);
-  fillStyle(drag ? colorDragging : hover ? colorHover : colorFore);
-  fillDot(x, y);
-  addBox({id: handleId, x: x - 5, y: y - 5, h: 10, w: 10, onDrag});
-  restore();
-}
-
 function drawRect1P(cube: Cube) {
   save();
+  const inputBoxId = 'cube' + cube.id;
   const delHover = isHovering('clearCube');
-  const hover = isHovering('cubeBtn' + cube.id);
+  const hover = isHovering(inputBoxId) || isHovering('cubeBtn' + cube.id);
   const depth = 0.25; // TODO
   const [x, y] = cube.position;
-  const [width] = cube.size;
+  const [width, height] = cube.size;
   const vp = db.vps[cube.vps[0]];
   
+  const [bx1, by1] = moveToVanishingPoint(x, y, depth, vp);
+  const [bx2, by2] = moveToVanishingPoint(x + width, y, depth, vp);
+  const [bx3, by3] = moveToVanishingPoint(x, y + width, depth, vp);
+  const [bx4, by4] = moveToVanishingPoint(x + width, y + width, depth, vp);
+
   strokeStyle(hover ? colorHoverSubtle : colorSubtle);
   drawVanishingLine(x,         y,         vp);
   drawVanishingLine(x,         y + width, vp);
   drawVanishingLine(x + width, y,         vp);
   drawVanishingLine(x + width, y + width, vp);
-  
-  strokeStyle(delHover ? colorRed : hover ? colorHover : colorFore);
-  const [bx1, by1] = moveToVanishingPoint(x, y, depth, vp);
-  const [bx2, by2] = moveToVanishingPoint(x + width, y, depth, vp);
-  const [bx3, by3] = moveToVanishingPoint(x, y + width, depth, vp);
-  const [bx4, by4] = moveToVanishingPoint(x + width, y + width, depth, vp);
-  strokeRect(x, y, width, width);
-  strokeLine(x, y, bx1, by1);
-  strokeLine(x + width, y, bx2, by2);
-  strokeLine(x, y + width, bx3, by3);
-  strokeLine(x + width, y + width, bx4, by4);
-  strokeLine(bx1, by1, bx2, by2);
-  strokeLine(bx1, by1, bx3, by3);
-  strokeLine(bx2, by2, bx4, by4);
-  strokeLine(bx3, by3, bx4, by4);
 
-  dragHandle(cube, x, y, (e) => {
-    updateCube(cube.id, { position: [e.x, e.y]})
+  strokeStyle(delHover ? colorRed : hover ? colorHover : colorFore);
+
+  const frontPath = new Path2D();
+  frontPath.rect(x, y, width, height);
+
+  const topPath = new Path2D();
+  topPath.moveTo(x, y);
+  topPath.lineTo(bx1, by1);
+  topPath.lineTo(bx2, by2);
+  topPath.lineTo(x + width, y);
+  topPath.closePath();
+
+  const botPath = new Path2D();
+  botPath.moveTo(x, y + height);
+  botPath.lineTo(bx3, by3);
+  botPath.lineTo(bx4, by4);
+  botPath.lineTo(x + width, y + height);
+  botPath.closePath();
+
+  const leftPath = new Path2D();
+  leftPath.moveTo(x, y);
+  leftPath.lineTo(bx1, by1);
+  leftPath.lineTo(bx3, by3);
+  leftPath.lineTo(x, y + height);
+  leftPath.closePath();
+
+  const rightPath = new Path2D();
+  rightPath.moveTo(x + width, y);
+  rightPath.lineTo(bx2, by2);
+  rightPath.lineTo(bx4, by4);
+  rightPath.lineTo(x + width, y + height);
+  rightPath.closePath();
+
+  const backPath = new Path2D();
+  backPath.moveTo(bx1, by1);
+  backPath.lineTo(bx2, by2);
+  backPath.lineTo(bx4, by4);
+  backPath.lineTo(bx3, by3);
+  backPath.closePath();
+
+  const shapePath = new Path2D();
+  shapePath.addPath(topPath);
+  shapePath.addPath(botPath);
+  shapePath.addPath(leftPath);
+  shapePath.addPath(backPath);
+  shapePath.addPath(frontPath);
+  shapePath.addPath(rightPath);
+
+  ctx.stroke(shapePath);
+
+  // TODO -- having a hard time getting all the paths into a single path
+  // without having fill being "inverted" in some cases where the path overlaps.
+  // Working around it by handling them separately, but it's hacky.
+  addBox({
+    id: inputBoxId,
+    path: [topPath, botPath, leftPath, backPath, frontPath, rightPath],
+    onDrag(e) {
+      translateCube(cube.id, e.dx, e.dy);
+    }
   });
+
   restore();
 }
 
 function drawRect2P(cube: Cube) {
   save();
+  const inputBoxId = 'cube' + cube.id;
   const delHover = isHovering('clearCube');
-  const hover = isHovering('cubeBtn' + cube.id);
+  const hover = isHovering(inputBoxId) || isHovering('cubeBtn' + cube.id);
   const depth = 0.25; // TODO
   const [x, y] = cube.position;
   const [h] = cube.size;
@@ -108,25 +146,68 @@ function drawRect2P(cube: Cube) {
 
   strokeStyle(delHover ? colorRed : hover ? colorHover : colorFore);
 
-  // perspective lines
-  strokeLine(x, y, bx1, by1);
-  strokeLine(x, y, bx2, by2);
-  strokeLine(bx1, by1, ix1, iy1);
-  strokeLine(bx2, by2, ix1, iy1);
-  strokeLine(x, y + h, bx3, by3);
-  strokeLine(x, y + h, bx4, by4);
-  strokeLine(bx3, by3, ix2, iy2);
-  strokeLine(bx4, by4, ix2, iy2);
+  const topPath = new Path2D();
+  topPath.moveTo(x, y);
+  topPath.lineTo(bx1, by1);
+  topPath.lineTo(ix1, iy1);
+  topPath.lineTo(bx2, by2);
+  topPath.closePath();
 
-  // vertical lines
-  strokeLine(x, y, x, y + h);
-  strokeLine(bx1, by1, bx3, by3);
-  strokeLine(bx2, by2, bx4, by4);
-  strokeLine(ix1, iy1, ix2, iy2);
+  const botPath = new Path2D();
+  botPath.moveTo(x, y + h);
+  botPath.lineTo(bx3, by3);
+  botPath.lineTo(ix2, iy2);
+  botPath.lineTo(bx4, by4);
+  botPath.closePath();
 
-  dragHandle(cube, x, y, (e) => {
-    updateCube(cube.id, { position: [e.x, e.y]})
+  const leftFrontPath = new Path2D();
+  leftFrontPath.moveTo(x, y);
+  leftFrontPath.lineTo(bx1, by1);
+  leftFrontPath.lineTo(bx3, by3);
+  leftFrontPath.lineTo(x, y + h);
+  leftFrontPath.closePath();
+
+  const leftBackPath = new Path2D();
+  leftBackPath.moveTo(bx1, by1);
+  leftBackPath.lineTo(ix1, iy1);
+  leftBackPath.lineTo(ix2, iy2);
+  leftBackPath.lineTo(bx3, by3);
+  leftBackPath.closePath();
+
+  const rightFrontPath = new Path2D();
+  rightFrontPath.moveTo(x, y);
+  rightFrontPath.lineTo(bx2, by2);
+  rightFrontPath.lineTo(bx4, by4);
+  rightFrontPath.lineTo(x, y + h);
+  rightFrontPath.closePath();
+
+  const rightBackPath = new Path2D();
+  rightBackPath.moveTo(bx2, by2);
+  rightBackPath.lineTo(ix1, iy1);
+  rightBackPath.lineTo(ix2, iy2);
+  rightBackPath.lineTo(bx4, by4);
+  rightBackPath.closePath();
+
+  const shapePath = new Path2D();
+  shapePath.addPath(topPath);
+  shapePath.addPath(botPath);
+  shapePath.addPath(leftFrontPath);
+  shapePath.addPath(leftBackPath);
+  shapePath.addPath(rightFrontPath);
+  shapePath.addPath(rightBackPath);
+  ctx.stroke(shapePath);
+
+  // TODO -- having a hard time getting all the paths into a single path
+  // without having fill being "inverted" in some cases where the path overlaps.
+  // Working around it by handling them separately, but it's hacky.
+  addBox({
+    id: inputBoxId,
+    path: [topPath, botPath, leftFrontPath, leftBackPath, rightFrontPath, rightBackPath],
+    onDrag(e) {
+      translateCube(cube.id, e.dx, e.dy);
+    }
   });
+
   restore();
 }
 
