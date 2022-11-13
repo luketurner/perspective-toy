@@ -92,9 +92,14 @@ export const createCanvasHandler = (el: HTMLCanvasElement, newRenderFn: () => vo
   ctx = newCtx;
   renderFn = newRenderFn;
 
-  el.addEventListener('mousedown', (ev) => handleMouseDown(ev.offsetX, ev.offsetY));
-  el.addEventListener('mouseup',   (ev) =>   handleMouseUp(ev.offsetX, ev.offsetY));
-  el.addEventListener('mousemove', (ev) => handleMouseMove(ev.offsetX, ev.offsetY, ev.movementX, ev.movementY));
+  el.addEventListener('pointerdown', (ev) => handleMouseDown(ev.offsetX, ev.offsetY));
+  el.addEventListener('pointerup',   (ev) =>   handleMouseUp(ev.offsetX, ev.offsetY));
+  el.addEventListener('pointermove', (ev) => 
+    ev.pointerType === 'touch' ? handleMouseMove(
+      ev.offsetX, ev.offsetY, -ev.movementX, -ev.movementY
+    ) : handleMouseMove(
+      ev.offsetX, ev.offsetY, ev.movementX, ev.movementY
+    ));
 
   return {
     after: (db) => requestAnimationFrame(render),
