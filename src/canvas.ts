@@ -84,7 +84,6 @@ export const render = () => {
 }
 
 export const createCanvasHandler = (el: HTMLCanvasElement, newRenderFn: () => void): Handler => {
-  if (!isCanvas(el)) throw new Error(`invalid element: ${el}`);
   const newCtx = el.getContext('2d');
 
   if (!newCtx) throw new Error(`Cannot find 2D Context for element: ${el}`);
@@ -101,8 +100,15 @@ export const createCanvasHandler = (el: HTMLCanvasElement, newRenderFn: () => vo
       ev.offsetX, ev.offsetY, ev.movementX, ev.movementY
     ));
 
+  el.height = db.canvasHeight;
+  el.width = db.canvasWidth;
+  
   return {
-    after: (db) => requestAnimationFrame(render),
+    after: (db) => {
+      el.height = db.canvasHeight;
+      el.width = db.canvasWidth;
+      requestAnimationFrame(render);
+    },
     id: "draw"
   };
 };

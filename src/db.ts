@@ -27,6 +27,8 @@ export interface AppDB {
   dragging: boolean;
   dragTarget: BoundingBox | undefined;
   hoveredBoxes: Record<string,true>;
+  canvasWidth: number;
+  canvasHeight: number;
 }
 
 export interface Cube {
@@ -78,6 +80,8 @@ export let db: AppDB = {
   dragging: false,
   dragTarget: undefined,
   hoveredBoxes: {},
+  canvasWidth: 0,
+  canvasHeight: 0,
 };
 
 export const createVanishingPoint = (opts?: Partial<VanishingPoint>): VanishingPoint => ({
@@ -208,4 +212,12 @@ export const stopHovering = (id: string) => {
 
 export const isDragging = (id: string) => {
   return id && db.dragTarget?.id === id;
+}
+
+export const setCanvasSize = (w: number, h: number) => {
+  setDb((db) => {
+    db.canvasHeight = h;
+    db.canvasWidth = w;
+    return db;
+  })
 }

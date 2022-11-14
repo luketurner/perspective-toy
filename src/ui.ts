@@ -17,7 +17,7 @@ export function drawUi() {
     (x, y) => addCubesRow(x, y),
   );
   font('16px monospace');
-  const footer = addFlow(16, 750, 8,
+  const footer = addFlow(16, db.canvasHeight - 36, 8,
     (x, y) => addLink(x, y, 'luketurner/perspective-toy', 'footer-github', 'https://github.com/luketurner/perspective-toy'),
     (x, y) => addText(x, y, 'Copyright 2022 Luke Turner'),
   );
@@ -27,11 +27,12 @@ function addCubesRow(x: number, y: number) {
   return addFlow(x, y, 8,
     (x, y) => addText(x, y, 'CUBES'),
     (x, y) => addButton(x, y, 'ADD', 'addCube', () => {
-      const vp = addVanishingPoint({ posX: 400, });
+      const vp = addVanishingPoint({ posX: db.canvasWidth / 2, });
+      const cubeWidth = Math.min(100, db.canvasWidth / 5, db.canvasHeight / 5);
       addCube({
         persp: '1p',
-        position: [350, 600],
-        size: [100, 100],
+        position: [db.canvasWidth / 2, db.canvasHeight / 3 * 2],
+        size: [cubeWidth, cubeWidth],
         vps: [vp.id]
       })
     }),
@@ -61,8 +62,8 @@ function addCubeBtn(x: number, y: number, cubeId: string, text: string) {
     const numId = parseInt(cubeId, 10);
     const cube = db.shapes[cubeId];
     if (cube.persp === '1p') {
-      const vp1 = addVanishingPoint({ posX: 200, });
-      const vp2 = addVanishingPoint({ posX: 600, });
+      const vp1 = addVanishingPoint({ posX: db.canvasWidth / 3, });
+      const vp2 = addVanishingPoint({ posX: db.canvasWidth / 3 * 2, });
       const oldVps = cube.vps;
       updateCube(numId, {
         persp: '2p',
