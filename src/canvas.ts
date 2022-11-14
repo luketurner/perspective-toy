@@ -93,16 +93,13 @@ export const createCanvasHandler = (el: HTMLCanvasElement, newRenderFn: () => vo
 
   el.addEventListener('pointerdown', (ev) => handleMouseDown(ev.offsetX, ev.offsetY));
   el.addEventListener('pointerup',   (ev) =>   handleMouseUp(ev.offsetX, ev.offsetY));
-  el.addEventListener('pointermove', (ev) => 
-    ev.pointerType === 'touch' ? handleMouseMove(
-      ev.offsetX, ev.offsetY, -ev.movementX, -ev.movementY
-    ) : handleMouseMove(
-      ev.offsetX, ev.offsetY, ev.movementX, ev.movementY
-    ));
+  el.addEventListener('pointermove', (ev) => handleMouseMove(
+    ev.offsetX, ev.offsetY, ev.movementX, ev.movementY
+  ));
 
   el.height = db.canvasHeight;
   el.width = db.canvasWidth;
-  
+
   return {
     after: (db) => {
       el.height = db.canvasHeight;
