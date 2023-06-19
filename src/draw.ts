@@ -253,7 +253,7 @@ function drawHorizon(y: number) {
   const boxId = 'horizon';
   const hover = isHovering(boxId);
   const drag = isDragging(boxId);
-  strokeStyle(drag ? colorDragging : hover ? colorHover : colorFore);
+  strokeStyle(drag ? colorDragging : hover ? colorHover : "transparent");
   strokeLine(0, y, w, y);
   const onDrag = (e: OnDragEvent) => {
     setHorizon(e.y);
@@ -269,7 +269,7 @@ function drawVanishingPoint(vp: VanishingPoint) {
   const boxId = 'vp' + vp.id;
   const hover = isHovering(boxId);
   const drag = isDragging(boxId);
-  fillStyle(drag ? colorDragging : hover ? colorHover : colorFore);
+  fillStyle(drag ? colorDragging : hover ? colorHover : "transparent");
   fillDot(x, y);
   const onDrag = (e: OnDragEvent) => {
     updateVanishingPoint(vp.id, { posX: e.x });

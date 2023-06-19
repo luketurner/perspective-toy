@@ -79,6 +79,7 @@ export const render = () => {
   clear();
   clearBoxes();
   ctx.save();
+  ctx.lineWidth = 3;
   renderFn();
   ctx.restore();
 }
